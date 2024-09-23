@@ -37,5 +37,6 @@ rename_merged_allmortality$ISO <- countrycode(rename_merged_allmortality$Country
 # Remove the CountryName variable
 final_allmortality <- rename_merged_allmortality %>%
   select(-CountryName)
+final_allmortality <- final_allmortality %>% rename(year=Year)
 
 head(final_allmortality)
