@@ -7,6 +7,7 @@ rawdisaster2 <- rawdisaster1 %>% select(Year, ISO, Disaster.Type)
 rawdisaster3 <- rawdisaster2 %>% mutate(drought = ifelse(Disaster.Type == "Drought",1,0),earthquake = ifelse(Disaster.Type == "Earthquake", 1, 0))
 
 newdisdata <- rawdisaster3 %>% group_by(Year,ISO) %>% summarize(drought = max(drought), earthquake= max(earthquake))
+newdisdata <- newdisdata %>% rename(year=Year)
 
 
 head(rawdisaster2)
