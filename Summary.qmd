@@ -4,82 +4,280 @@ format: pdf
 editor: visual
 ---
 
-## Exploratory data analysis
+**Name: Ting Lin**
 
-Name: Ting Lin
+First of all, I would like to perform `head()` and `tail()` to have a quick look of the data set.
 
-First of all, I would like to perform `summary()` to check some generic information about our data set.
-
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(here)
 library(tidyverse)
 source("R/FinalMergedData.R")
 head(allfinal,n=10)
 tail(allfinal, n=10)
-summary(allfinal)
-
 ```
 
-From the `summery()`, there are 426 missing values for Maternal Mortality Rate, 62 missing values for gpd100, 20 missing values for popdens, urban, male_edu, temp, rainfall1000, Infant Mortality Rate, Neonatal Mortality Rate and Under5 Mortality Rate.
+\newpage
 
-Then I would like to look at Total Death in details.
+Then perform `summary()` to check some generic information about our data set.
 
-The Minimum value for total death is 20, and Maximum is 78644. The range is pretty wide.
-
-I would like to locate which country has the maximum total death and visualize it by year to see the patterns for this specific country.
+```{r, message=FALSE, warning=FALSE}
+summary(allfinal)
+```
 
 ```{r}
 # visualize Maternal Mortality Rate by year.
 max_death_country <- allfinal$country_name[which.max(allfinal$totaldeath)]
 print(max_death_country)
-library(ggplot2)
-
+min_death_country <- allfinal$country_name[which.min(allfinal$totaldeath)]
+print(min_death_country)
    
 ```
 
-And the answer is Syria.
+```{r}
+library(ggplot2)
+library(patchwork)
+Syria <- allfinal[allfinal$country_name == "Syria",]
+
+combined_plot <- Syria %>%
+  ggplot(mapping = aes(x = factor(year))) +
+  geom_line(aes(y = MaternalMortalityRate, group = 1, 
+                color = "Maternal Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = MaternalMortalityRate, fill = "Maternal Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  geom_line(aes(y = InfantMortalityRate, group = 1, 
+                color = "Infant Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = InfantMortalityRate, fill = "Infant Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  geom_line(aes(y = NeonatalMortalityRate, group = 1, 
+                color = "Neonatal Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = NeonatalMortalityRate, fill = "Neonatal Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  geom_line(aes(y = Under5MortalityRate, group = 1, 
+                color = "Under5 Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = Under5MortalityRate, fill = "Under5 Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  scale_x_discrete(breaks = unique(Syria$year), labels = sprintf("%02d", Syria$year %% 100)) +
+  
+  scale_color_manual(name = "Legend", 
+                     values = c("Maternal Mortality Rate" = "blue", 
+                                "Infant Mortality Rate" = "orange", 
+                                "Neonatal Mortality Rate" = "purple", 
+                                "Under5 Mortality Rate" = "green")) +
+  scale_fill_manual(name = "Legend", 
+                    values = c("Maternal Mortality Rate" = "blue", 
+                               "Infant Mortality Rate" = "orange", 
+                               "Neonatal Mortality Rate" = "purple", 
+                               "Under5 Mortality Rate" = "green")) +
+  
+  labs(x = "Year (20xx)", y = "Mortality Rate", title = "Mortality Rates in Syria") +
+  theme(panel.background = element_rect(fill = "lightgrey", color = "black"),
+        legend.position = "bottom") + guides(color = guide_legend(nrow = 2, ncol = 2),
+         fill = guide_legend(nrow = 2, ncol = 2))
+
+combined_plotnew <- combined_plot + 
+  plot_annotation(
+    caption = "Attention: we have 2 missing values for Maternal Mortality Rate 
+    in Year 2018 and 2019 "
+  )
+
+plot1 <- Syria %>% 
+  ggplot(mapping = aes(x = factor(year), y = log(totaldeath))) +
+  geom_line(na.rm = TRUE, group = 1, color = "red") +  
+  geom_point(na.rm = TRUE, shape = 21, color = "red", fill = "pink", size = 2) +
+  scale_x_discrete(breaks = unique(Syria$year),labels = sprintf("%02d", Syria$year %% 100)) +
+  labs(x = "Year(20xx)", y = "Log-Transformation of Total Death", 
+       title = "Log-Transformation of Total Death in Syria") +
+  theme(panel.background = element_rect(fill = "#BFD5E3", color = "#6D9EC1",
+                                        linewidth = 2, linetype = "solid"),
+        panel.grid.major = element_line(linewidth = 0.5, linetype = 'solid',
+                                colour = "white"), 
+        panel.grid.minor = element_line(linewidth = 0.25, linetype = 'solid',
+                                colour = "white")) +
+  geom_hline( yintercept = log(25), linetype = "dashed", color = "red", linewidth = 1)
+
+
+```
+
+\newpage
+
+```{r}
+plot1
+combined_plotnew
+```
+
+\newpage
+
+```{r}
+Albania <- allfinal[allfinal$country_name == "Albania",]
+
+combined_plot_Al <- Albania %>%
+  ggplot(mapping = aes(x = factor(year))) +
+  geom_line(aes(y = MaternalMortalityRate, group = 1, 
+                color = "Maternal Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = MaternalMortalityRate, fill = "Maternal Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  geom_line(aes(y = InfantMortalityRate, group = 1, 
+                color = "Infant Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = InfantMortalityRate, fill = "Infant Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  geom_line(aes(y = NeonatalMortalityRate, group = 1, 
+                color = "Neonatal Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = NeonatalMortalityRate, fill = "Neonatal Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  geom_line(aes(y = Under5MortalityRate, group = 1, 
+                color = "Under5 Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = Under5MortalityRate, fill = "Under5 Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  scale_x_discrete(breaks = unique(Albania$year), labels = sprintf("%02d", Albania$year %% 100)) +
+  
+  scale_color_manual(name = "Legend", 
+                     values = c("Maternal Mortality Rate" = "blue", 
+                                "Infant Mortality Rate" = "orange", 
+                                "Neonatal Mortality Rate" = "purple", 
+                                "Under5 Mortality Rate" = "green")) +
+  scale_fill_manual(name = "Legend", 
+                    values = c("Maternal Mortality Rate" = "blue", 
+                               "Infant Mortality Rate" = "orange", 
+                               "Neonatal Mortality Rate" = "purple", 
+                               "Under5 Mortality Rate" = "green")) +
+  
+  labs(x = "Year (20xx)", y = "Mortality Rate", title = "Mortality Rates in Albania") +
+  theme(panel.background = element_rect(fill = "lightgrey", color = "black"),
+        legend.position = "bottom") + guides(color = guide_legend(nrow = 2, ncol = 2),
+         fill = guide_legend(nrow = 2, ncol = 2))
+
+combined_plotalnew <- combined_plot_Al + 
+  plot_annotation(
+    caption = "Attention: we have 2 missing values for Maternal Mortality Rate 
+    in Year 2018 and 2019 "
+  )
+
+plot3 <- Albania %>% 
+  ggplot(mapping = aes(x = factor(year), y = totaldeath)) +
+  geom_line(na.rm = TRUE, group = 1, color = "red") +  
+  geom_point(na.rm = TRUE, shape = 21, color = "red", fill = "pink", size = 2) +
+  scale_x_discrete(breaks = unique(Albania$year),labels = sprintf("%02d", Albania$year %% 100)) +
+  labs(x = "Year(20xx)", y = "Total Death", 
+       title = "Total Death in Albania") +
+  theme(panel.background = element_rect(fill = "#BFD5E3", color = "#6D9EC1",
+                                        linewidth = 2, linetype = "solid"),
+        panel.grid.major = element_line(linewidth = 0.5, linetype = 'solid',
+                                colour = "white"), 
+        panel.grid.minor = element_line(linewidth = 0.25, linetype = 'solid',
+                                colour = "white")) +
+  geom_hline( yintercept = 25, linetype = "dashed", color = "red", linewidth = 1)
+
+
+combined_plotalnew
+plot3
+```
+
+\newpage
+
+Then I would like to randomly select another country to see if they have the similar patterns.
+
+```{r}
+set.seed(123)  
+random_country <- sample(allfinal$country_name, 1)
+random_country
+```
 
 ```{r}
 library(ggplot2)
-library(gridExtra)
-Syria <- allfinal[allfinal$country_name == "Syria",]
-plot1 <- Syria %>% 
-  ggplot(mapping = aes(x = factor(year), y = totaldeath)) +
-  geom_line(na.rm = TRUE, group = 1, color="red") +  
-  geom_point(na.rm = TRUE,shape=21, color="red", fill="pink", size=2) +
-  scale_x_discrete(breaks = unique(Syria$year)) +
-  theme(panel.background = element_rect(fill = "lightgrey", color = "black"))
-plot2 <- Syria %>% 
-  ggplot(mapping = aes(x = factor(year), y = MaternalMortalityRate)) +
-  geom_line(na.rm = TRUE, group = 1, color = "blue") +  
-  geom_point(na.rm = TRUE, shape = 21, color = "blue", fill = "lightblue", size = 2) +
-  scale_x_discrete(breaks = unique(Syria$year)) +
-  theme(panel.background = element_rect(fill = "lightgrey", color = "black"),
-        axis.text.x = element_text(margin = margin(t = 50)))
-plot3 <- Syria %>% 
-  ggplot(mapping = aes(x = factor(year), y = InfantMortalityRate)) +
-  geom_line(na.rm = TRUE, group = 1, color = "orange") +  
-  geom_point(na.rm = TRUE, shape = 21, color = "orange", fill = "orange", size = 2) +
-  scale_x_discrete(breaks = unique(Syria$year)) +
-  theme(panel.background = element_rect(fill = "lightgrey", color = "black"))
-plot4 <- Syria %>% 
-  ggplot(mapping = aes(x = factor(year), y = NeonatalMortalityRate)) +
-  geom_line(na.rm = TRUE, group = 1, color = "purple") +  
-  geom_point(na.rm = TRUE, shape = 21, color = "purple", fill = "purple", size = 2) +
-  scale_x_discrete(breaks = unique(Syria$year)) +
-  theme(panel.background = element_rect(fill = "lightgrey", color = "black"))
-plot5 <- Syria %>% 
-  ggplot(mapping = aes(x = factor(year), y = Under5MortalityRate)) +
-  geom_line(na.rm = TRUE, group = 1, color = "green") +  
-  geom_point(na.rm = TRUE, shape = 21, color = "green", fill = "green", size = 2) +
-  scale_x_discrete(breaks = unique(Syria$year)) +
-  theme(panel.background = element_rect(fill = "lightgrey", color = "black"))
-
-plot1
-plot2
-plot3
-plot4
-plot5
-#plotall4 <- grid.arrange(plot2, plot3, plot4, plot5, ncol = 2)
-#plotall4
+library(patchwork)
+Pakistan <- allfinal[allfinal$country_name == "Pakistan",]
 ```
+
+I will repeat the same steps as Syria.
+
+```{r}
+combined_plot_pa <- Pakistan %>%
+  ggplot(mapping = aes(x = factor(year))) +
+  geom_line(aes(y = MaternalMortalityRate, group = 1, 
+                color = "Maternal Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = MaternalMortalityRate, fill = "Maternal Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  geom_line(aes(y = InfantMortalityRate, group = 1, 
+                color = "Infant Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = InfantMortalityRate, fill = "Infant Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  geom_line(aes(y = NeonatalMortalityRate, group = 1, 
+                color = "Neonatal Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = NeonatalMortalityRate, fill = "Neonatal Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  geom_line(aes(y = Under5MortalityRate, group = 1, 
+                color = "Under5 Mortality Rate"), na.rm = TRUE) +
+  geom_point(aes(y = Under5MortalityRate, fill = "Under5 Mortality Rate"), 
+             na.rm = TRUE, shape = 21, size = 2) +
+  
+  scale_x_discrete(breaks = unique(Pakistan$year), labels = sprintf("%02d", Pakistan$year %% 100)) +
+  scale_color_manual(name = "Legend", 
+                     values = c("Maternal Mortality Rate" = "blue", 
+                                "Infant Mortality Rate" = "orange", 
+                                "Neonatal Mortality Rate" = "purple", 
+                                "Under5 Mortality Rate" = "green")) +
+  scale_fill_manual(name = "Legend", 
+                    values = c("Maternal Mortality Rate" = "blue", 
+                               "Infant Mortality Rate" = "orange", 
+                               "Neonatal Mortality Rate" = "purple", 
+                               "Under5 Mortality Rate" = "green")) +
+  
+  labs(x = "Year (20xx)", y = "Mortality Rate", title = "Mortality Rates in Pakistan") +
+  theme(panel.background = element_rect(fill = "lightgrey", color = "black"),
+        legend.position = "bottom") + guides(color = guide_legend(nrow = 2, ncol = 2),
+         fill = guide_legend(nrow = 2, ncol = 2))
+
+combined_plotnew_pa <- combined_plot_pa + 
+  plot_annotation(
+    caption = "Attention: we have 2 missing values for Maternal Mortality Rate 
+    in Year 2018 and 2019 "
+  )
+
+plot1_pa <- Pakistan %>% 
+  ggplot(mapping = aes(x = factor(year), y = log(totaldeath))) +
+  geom_line(na.rm = TRUE, group = 1, color = "red") +  
+  geom_point(na.rm = TRUE, shape = 21, color = "red", fill = "pink", size = 2) +
+  scale_x_discrete(breaks = unique(Pakistan$year),labels = sprintf("%02d", Pakistan$year %% 100)) +
+  labs(x = "Year(20xx)", y = "Total Death", 
+       title = "Log-Transformation of Total Death in Pakistan") +
+  theme(panel.background = element_rect(fill = "#BFD5E3", color = "#6D9EC1",
+                                        linewidth = 2, linetype = "solid"),
+        panel.grid.major = element_line(linewidth = 0.5, linetype = 'solid',
+                                colour = "white"), 
+        panel.grid.minor = element_line(linewidth = 0.25, linetype = 'solid',
+                                colour = "white")) +
+  geom_hline( yintercept = log(25), linetype = "dashed", color = "red", linewidth = 1)
+
+
+plot1_pa
+combined_plotnew_pa
+```
+
+\newpage
+
+**Comments:**
+
+From the `summery()`, there are 426 missing values for Maternal Mortality Rate, 62 missing values for gpd100, 20 missing values for popdens, urban, male_edu, temp, rainfall1000, Infant Mortality Rate, Neonatal Mortality Rate and Under5 Mortality Rate.
+
+The Minimum value for total death is 20, and Maximum is 78644. The range is quite broad.
+
+I aim to identify the country with the highest and lowest total deaths and visualize the data by year to observe trends for that specific country.
+
+Syria has highest total death. From Syria's two plots, we observe that after 2011, the mortality rates for infants and children under 5 increased significantly, reaching a peak in 2014. During the same period, the total death toll in Syria also peaked. Investigating whether there is a significant relationship between these trends is the next question I intend to explore.
+
+Albania has the lowest total deaths. From its two plots, we can see that there were no armed conflicts in any year, yet the mortality rate is still relatively high.
+
+Randomly selected the country which is Pakistan, from its two plots, throughout all the years of armed conflict, the mortality rates, particularly the maternal mortality rate, remain consistently high. The patterns are quite different to Syria.
+
+We need to conduct additional tests to determine the strength and significance of the correlation or association between the variables.
