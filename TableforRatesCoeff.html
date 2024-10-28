@@ -108,92 +108,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="log-transform-gdp-and-use-the-transformed-gdp-as-one-of-the-predictors" class="level2">
 <h2 class="anchored" data-anchor-id="log-transform-gdp-and-use-the-transformed-gdp-as-one-of-the-predictors">1. Log transform GDP and use the transformed GDP as one of the predictors</h2>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-✔ purrr     1.0.2     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(table1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre><code>
-Attaching package: 'table1'
-
-The following objects are masked from 'package:base':
-
-    units, units&lt;-</code></pre>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre><code>here() starts at /Users/apple/Desktop/armed_conflict</code></pre>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre><code>
-Attaching package: 'plm'
-
-The following objects are masked from 'package:dplyr':
-
-    between, lag, lead</code></pre>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(texreg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre><code>Version:  1.39.4
-Date:     2024-07-23
-Author:   Philip Leifeld (University of Manchester)
-
-Consider submitting praise using the praise or praise_interactive functions.
-Please cite the JSS article in your publications -- see citation("texreg").
-
-Attaching package: 'texreg'
-
-The following object is masked from 'package:tidyr':
-
-    extract</code></pre>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">here</span>(<span class="st">"merged_all_con.csv"</span>), <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>armconf1 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(data<span class="sc">$</span>armconf1), <span class="dv">0</span>, data<span class="sc">$</span>armconf1)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>popdens <span class="ot">=</span> data<span class="sc">$</span>popdens <span class="sc">/</span><span class="dv">100</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>[1] “country_name” “ISO” “region”<br>
-[4] “year” “gdp1000” “OECD”<br>
-[7] “OECD2023” “popdens” “urban”<br>
-[10] “agedep” “male_edu” “temp”<br>
-[13] “rainfall1000” “totaldeath” “armconf1”<br>
-[16] “MaternalMortalityRate” “InfantMortalityRate” “NeonatalMortalityRate” [19] “Under5MortalityRate” “drought” “earthquake”</p>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>loggdp1000 <span class="ot">&lt;-</span> <span class="fu">log</span>(data<span class="sc">$</span>gdp1000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">warning =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(table1)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plm)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(texreg)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">here</span>(<span class="st">"merged_all_con.csv"</span>), <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>armconf1 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(data<span class="sc">$</span>armconf1), <span class="dv">0</span>, data<span class="sc">$</span>armconf1)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>popdens <span class="ot">=</span> data<span class="sc">$</span>popdens <span class="sc">/</span><span class="dv">100</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "country_name"          "ISO"                   "region"               
+ [4] "year"                  "gdp1000"               "OECD"                 
+ [7] "OECD2023"              "popdens"               "urban"                
+[10] "agedep"                "male_edu"              "temp"                 
+[13] "rainfall1000"          "totaldeath"            "armconf1"             
+[16] "MaternalMortalityRate" "InfantMortalityRate"   "NeonatalMortalityRate"
+[19] "Under5MortalityRate"   "drought"               "earthquake"           </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>loggdp1000 <span class="ot">&lt;-</span> <span class="fu">log</span>(data<span class="sc">$</span>gdp1000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="script-that-fits-the-four-mortality-models-using-plm" class="level2">
-<h2 class="anchored" data-anchor-id="script-that-fits-the-four-mortality-models-using-plm">2. script that fits the four mortality models using plm()</h2>
+<h2 class="anchored" data-anchor-id="script-that-fits-the-four-mortality-models-using-plm">2. Script that fits the four mortality models using plm()</h2>
 </section>
 <section id="creating-a-table" class="level2">
 <h2 class="anchored" data-anchor-id="creating-a-table">3. Creating a table</h2>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(table1)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plm)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(texreg)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Week 8 in-class</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">" ~ armconf1 + loggdp1000 + OECD + popdens + urban + </span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="st">                  agedep + male_edu + temp + rainfall1000 + earthquake + drought + </span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="st">                  ISO + as.factor(year)"</span>)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>matmormod <span class="ot">&lt;-</span> <span class="fu">plm</span>(<span class="fu">update.formula</span>(preds, MaternalMortalityRate <span class="sc">~</span> .), <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre><code>Warning in pdata.frame(data, index = index, ...): duplicate couples (id-time) in resulting pdata.frame
- to find out which, use, e.g., table(index(your_pdataframe), useNA = "ifany")</code></pre>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>un5mormod <span class="ot">&lt;-</span> <span class="fu">plm</span>(<span class="fu">update.formula</span>(preds, Under5MortalityRate <span class="sc">~</span> .), <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre><code>Warning in pdata.frame(data, index = index, ...): duplicate couples (id-time) in resulting pdata.frame
- to find out which, use, e.g., table(index(your_pdataframe), useNA = "ifany")</code></pre>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>infmormod <span class="ot">&lt;-</span> <span class="fu">plm</span>(<span class="fu">update.formula</span>(preds, InfantMortalityRate <span class="sc">~</span> .), <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre><code>Warning in pdata.frame(data, index = index, ...): duplicate couples (id-time) in resulting pdata.frame
- to find out which, use, e.g., table(index(your_pdataframe), useNA = "ifany")</code></pre>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>neomormod <span class="ot">&lt;-</span> <span class="fu">plm</span>(<span class="fu">update.formula</span>(preds, NeonatalMortalityRate <span class="sc">~</span> .), <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre><code>Warning in pdata.frame(data, index = index, ...): duplicate couples (id-time) in resulting pdata.frame
- to find out which, use, e.g., table(index(your_pdataframe), useNA = "ifany")</code></pre>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">htmlreg</span>(<span class="fu">list</span>(matmormod, un5mormod, infmormod, neomormod),</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">custom.model.names =</span> <span class="fu">c</span>(<span class="st">"Maternal Mortality"</span>, </span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Under 5 Mortality"</span>, </span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Infant Mortality"</span>, </span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Neonatal Mortality"</span>),</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Table 1: Regression Results for Mortality Rates"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(table1)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plm)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(texreg)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Week 8 in-class</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">" ~ armconf1 + loggdp1000 + OECD + popdens + urban + </span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="st">                  agedep + male_edu + temp + rainfall1000 + earthquake + drought + </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="st">                  ISO + as.factor(year)"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>matmormod <span class="ot">&lt;-</span> <span class="fu">plm</span>(<span class="fu">update.formula</span>(preds, MaternalMortalityRate <span class="sc">~</span> .), <span class="at">data =</span> data)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>un5mormod <span class="ot">&lt;-</span> <span class="fu">plm</span>(<span class="fu">update.formula</span>(preds, Under5MortalityRate <span class="sc">~</span> .), <span class="at">data =</span> data)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>infmormod <span class="ot">&lt;-</span> <span class="fu">plm</span>(<span class="fu">update.formula</span>(preds, InfantMortalityRate <span class="sc">~</span> .), <span class="at">data =</span> data)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>neomormod <span class="ot">&lt;-</span> <span class="fu">plm</span>(<span class="fu">update.formula</span>(preds, NeonatalMortalityRate <span class="sc">~</span> .), <span class="at">data =</span> data)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">htmlreg</span>(<span class="fu">list</span>(matmormod, un5mormod, infmormod, neomormod),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">custom.model.names =</span> <span class="fu">c</span>(<span class="st">"Maternal Mortality"</span>, </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Under 5 Mortality"</span>, </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Infant Mortality"</span>, </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Neonatal Mortality"</span>),</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Table 1: Regression Results for Mortality Rates"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="texreg" style="margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;">
 <caption>
 Table 1: Regression Results for Mortality Rates

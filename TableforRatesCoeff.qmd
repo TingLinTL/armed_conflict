@@ -9,6 +9,7 @@ output: pdf_document
 ## 1. Log transform GDP and use the transformed GDP as one of the predictors
 
 ```{r, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(warning = FALSE)
 #| output: asis
 library(tidyverse)
 library(table1)
@@ -22,7 +23,7 @@ names(data)
 data$loggdp1000 <- log(data$gdp1000)
 ```
 
-## 2. script that fits the four mortality models using plm()
+## 2. Script that fits the four mortality models using plm()
 
 ## 3. Creating a table
 
