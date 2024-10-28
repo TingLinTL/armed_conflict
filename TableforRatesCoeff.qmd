@@ -1,0 +1,54 @@
+---
+title: "CHL 8010 - Week 8: Panel Regression"
+author: "Ting Lin"
+output: pdf_document
+---
+
+## Week8 In_class Assignment
+
+## 1. Log transform GDP and use the transformed GDP as one of the predictors
+
+```{r, message = FALSE, warning = FALSE}
+#| output: asis
+library(tidyverse)
+library(table1)
+library(here)
+library(plm)
+library(texreg)
+data <- read.csv(here("merged_all_con.csv"), header = TRUE)
+data$armconf1 <- ifelse(is.na(data$armconf1), 0, data$armconf1)
+data$popdens = data$popdens /100
+names(data)
+data$loggdp1000 <- log(data$gdp1000)
+```
+
+## 2. script that fits the four mortality models using plm()
+
+## 3. Creating a table
+
+```{r, message = FALSE, warning = FALSE}
+#| output: asis
+library(tidyverse)
+library(table1)
+library(here)
+library(plm)
+library(texreg)
+
+# Week 8 in-class
+preds <- as.formula(" ~ armconf1 + loggdp1000 + OECD + popdens + urban + 
+                  agedep + male_edu + temp + rainfall1000 + earthquake + drought + 
+                  ISO + as.factor(year)")
+
+matmormod <- plm(update.formula(preds, MaternalMortalityRate ~ .), data = data)
+un5mormod <- plm(update.formula(preds, Under5MortalityRate ~ .), data = data)
+infmormod <- plm(update.formula(preds, InfantMortalityRate ~ .), data = data)
+neomormod <- plm(update.formula(preds, NeonatalMortalityRate ~ .), data = data)
+
+htmlreg(list(matmormod, un5mormod, infmormod, neomormod),
+        custom.model.names = c("Maternal Mortality", 
+                               "Under 5 Mortality", 
+                               "Infant Mortality", 
+                               "Neonatal Mortality"),
+        caption = "Table 1: Regression Results for Mortality Rates")
+
+```
